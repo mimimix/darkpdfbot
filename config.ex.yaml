@@ -2,3 +2,5 @@ telegram:
   token: TOKEN
   whitelist:
   - 123
+  admins:
+  - 123

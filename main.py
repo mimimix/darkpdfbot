@@ -92,7 +92,7 @@ async def handle_document(update: Update, context: CallbackContext) -> None:
 
 async def add_to_whitelist(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
-    if not is_user_whitelisted(user_id, context.bot_data['whitelist']):
+    if not is_user_whitelisted(user_id, context.bot_data['admins']):
         await update.message.reply_text('У вас нет прав для выполнения этой команды.')
         return
 
@@ -101,7 +101,7 @@ async def add_to_whitelist(update: Update, context: CallbackContext) -> None:
         if new_user_id not in context.bot_data['whitelist']:
             context.bot_data['whitelist'].append(new_user_id)
             with open('config.yaml', 'w') as file:
-                yaml.safe_dump({'telegram': {'token': context.bot_data['token'], 'whitelist': context.bot_data['whitelist']}}, file)
+                yaml.safe_dump({'telegram': {'token': context.bot_data['token'], 'whitelist': context.bot_data['whitelist'], 'admins': context.bot_data['admins']}}, file)
             await update.message.reply_text(f'Пользователь {new_user_id} добавлен в белый список.')
         else:
             await update.message.reply_text(f'Пользователь {new_user_id} уже в белом списке.')
@@ -111,7 +111,7 @@ async def add_to_whitelist(update: Update, context: CallbackContext) -> None:
 # Команда для удаления пользователя из белого списка
 async def remove_from_whitelist(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
-    if not is_user_whitelisted(user_id, context.bot_data['whitelist']):
+    if not is_user_whitelisted(user_id, context.bot_data['admins']):
         await update.message.reply_text('У вас нет прав для выполнения этой команды.')
         return
 
@@ -120,7 +120,7 @@ async def remove_from_whitelist(update: Update, context: CallbackContext) -> Non
         if remove_user_id in context.bot_data['whitelist']:
             context.bot_data['whitelist'].remove(remove_user_id)
             with open('config.yaml', 'w') as file:
-                yaml.safe_dump({'telegram': {'token': context.bot_data['token'], 'whitelist': context.bot_data['whitelist']}}, file)
+                yaml.safe_dump({'telegram': {'token': context.bot_data['token'], 'whitelist': context.bot_data['whitelist'], 'admins': context.bot_data['admins']}}, file)
             await update.message.reply_text(f'Пользователь {remove_user_id} удалён из белого списка.')
         else:
             await update.message.reply_text(f'Пользователь {remove_user_id} не найден в белом списке.')
@@ -140,6 +140,7 @@ def main() -> None:
         config = yaml.safe_load(file)
         token = config['telegram']['token']
         whitelist = config['telegram']['whitelist']
+        admins = config['telegram']['admins']
     
     # Создайте объект `Application` и передайте токен
     application = Application.builder().token(token).build()
@@ -147,6 +148,7 @@ def main() -> None:
     # Зарегистрируйте обработчики
     application.bot_data['token'] = token
     application.bot_data['whitelist'] = whitelist
+    application.bot_data['admins'] = admins
     
     # Зарегистрируйте обработчики
     application.add_handler(MessageHandler(filters.Document.ALL, handle_document))

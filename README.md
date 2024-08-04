@@ -31,6 +31,9 @@ telegram:
   whitelist:
     - USER_ID_1
     - USER_ID_2
+   admins:
+    - USER_ID_1
+    - USER_ID_2
 ```
 
    Замените `YOUR_TELEGRAM_BOT_TOKEN` на токен вашего бота и добавьте идентификаторы пользователей, которые будут иметь доступ к боту.
