@@ -1,4 +1,4 @@
-name: Build wifi_monitor image
+name: Build docker darkpdf_tgbot
 
 on:
   workflow_dispatch:
