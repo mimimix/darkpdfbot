@@ -1,0 +1,33 @@
+name: Build wifi_monitor image
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_NAME: darkpdf_tgbot
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      #      - uses: TooMuch4U/actions-clean@v2.1 # need for self-hosted runner
+      - uses: actions/checkout@v4
+      - name: Login to GitHub Package Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Start build ${{ env.PROJECT_NAME }}
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository }}
+          echo START BUILD WITH IMAGE_ID=$IMAGE_ID
+
+          docker buildx build -f Dockerfile \
+          --tag $IMAGE_ID:latest \
+          -t ${{ env.PROJECT_NAME }} \
+          .
+          
+          docker push $IMAGE_ID:latest
+
+          echo $IMAGE_ID:latest
