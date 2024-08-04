@@ -72,7 +72,7 @@ async def handle_document(update: Update, context: CallbackContext) -> None:
     if not is_user_whitelisted(user_id, context.bot_data['whitelist']):
         await update.message.reply_text(f'Ваш ID ({user_id}) не в белом списке.')
         return
-
+    await update.message.reply_text('Начинаю обработку...')
     file = update.message.document
     file_id = file.file_id
     file_name = file.file_name
@@ -127,6 +127,9 @@ async def remove_from_whitelist(update: Update, context: CallbackContext) -> Non
     else:
         await update.message.reply_text('Пожалуйста, укажите ID пользователя.')
 
+async def start_message(update: Update, context: CallbackContext) -> None:
+    await update.message.reply_text('Добро пожайловать в бота, который полностью сгенерила сетка. С тебя pdf, с меня перенос ее на темную сторону 😈')
+
 if not os.path.exists("tmp/"):
     # Если папка не существует, создаем ее
     os.makedirs("tmp/")
@@ -154,6 +157,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
     application.add_handler(CommandHandler('addu', add_to_whitelist))
     application.add_handler(CommandHandler('delu', remove_from_whitelist))
+    application.add_handler(CommandHandler('start', start_message))
     
     # Запустите бота
     application.run_polling()
