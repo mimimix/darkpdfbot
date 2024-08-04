@@ -1,0 +1,4 @@
+telegram:
+  token: TOKEN
+  whitelist:
+  - 123
