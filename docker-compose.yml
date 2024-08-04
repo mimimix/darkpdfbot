@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   bot:
-    build: .
+    image: ghcr.io/mimimix/darkpdfbot:latest
     container_name: tg_dark_pdf_bot
     volumes:
       - ./tmp:/app/tmp
